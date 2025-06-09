@@ -7,7 +7,9 @@ const nextConfig = {
   images: { 
     remotePatterns: [
       { hostname: "localhost" },
-      { hostname: "www.google.com" }
+      { hostname: "www.google.com" },
+      { hostname: "i.ytimg.com" },
+      { hostname: "img.youtube.com" }
     ] 
   } 
 }

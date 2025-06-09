@@ -76,12 +76,6 @@ npm run db:generate
 npm run db:migrate
 ```
 
-## Deployment
-
-This application can be easily deployed to Vercel:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fsaas-boilerplate)
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

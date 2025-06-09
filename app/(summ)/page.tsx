@@ -1,12 +1,8 @@
 "use server"
 
-import { getSummariesAction } from "@/actions/db/summaries-actions"
-import { auth } from "@clerk/nextjs/server"
+import { getVideosAction } from "@/actions/db/videos-actions"
 import { Suspense } from "react"
-import SummaryCard from "@/components/ui/summary-card"
-import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import VideoCard from "@/components/ui/video-card"
 
 export default async function HomePage() {
   return (
@@ -25,9 +21,13 @@ export default async function HomePage() {
 
       <Suspense
         fallback={
-          <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="bg-muted h-40 animate-pulse rounded-lg" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="bg-muted h-48 animate-pulse rounded-lg" />
+                <div className="bg-muted h-4 animate-pulse rounded-lg" />
+                <div className="bg-muted h-4 w-1/2 animate-pulse rounded-lg" />
+              </div>
             ))}
           </div>
         }
@@ -39,40 +39,31 @@ export default async function HomePage() {
 }
 
 async function FeedFetcher() {
-  const { userId } = await auth()
-  const actualUserId = userId || "demo-user-id"
+  const { isSuccess, data: videos } = await getVideosAction()
 
-  const { isSuccess, data: summaries } = await getSummariesAction()
-
-  if (!isSuccess || !summaries || summaries.length === 0) {
+  if (!isSuccess || !videos || videos.length === 0) {
     return (
       <div className="py-10 text-center">
-        <h3 className="text-lg font-medium">No summaries yet</h3>
+        <h3 className="text-lg font-medium">No videos yet</h3>
         <p className="text-muted-foreground mt-1">
-          Be the first to submit a URL for summarization
+          There are no videos to display at the moment.
         </p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Recent Summaries</h2>
-
-      <div className="space-y-4">
-        {summaries.map(summary => (
-          <SummaryCard
-            key={summary.id}
-            id={summary.id}
-            title={summary.title}
-            snippet={summary.snippet}
-            sourceName={summary.sourceName}
-            sourceLogo={summary.sourceLogo || undefined}
-            contentType={summary.contentType}
-            userId={actualUserId}
-          />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {videos.map(video => (
+        <VideoCard
+          key={video.id}
+          id={video.id}
+          title={video.title}
+          thumbnailUrl={video.thumbnailUrl}
+          channelName={video.channelName}
+          publishedAt={video.publishedAt}
+        />
+      ))}
     </div>
   )
 }
