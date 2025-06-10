@@ -1,5 +1,6 @@
 import {
   createProfileAction,
+  deleteProfileAction,
   getProfileByUserIdAction
 } from "@/actions/db/profiles-actions"
 import { WebhookEvent } from "@clerk/nextjs/server"
@@ -69,11 +70,17 @@ export async function POST(req: Request) {
       console.log(`User ${id} updated in Clerk, no action needed in our DB`)
     }
   } else if (eventType === "user.deleted") {
-    // Handle user deletion if needed
-    // We're not deleting the user from our database since we might want to keep their data
-    console.log(
-      `User ${evt.data.id} deleted in Clerk, no action taken in our DB`
-    )
+    // Get the user data from the payload
+    const { id } = evt.data
+
+    if (!id) {
+      return new NextResponse("Error: Missing user ID for deletion", {
+        status: 400
+      })
+    }
+    // Delete the user's profile from our database
+    console.log(`Deleting profile for Clerk user ID: ${id}`)
+    await deleteProfileAction(id)
   }
 
   // Return a 200 response
