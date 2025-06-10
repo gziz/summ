@@ -53,7 +53,7 @@ export default async function SummaryPage({ params }: SummaryPageProps) {
     <div className="space-y-6">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-bold">{video.title}</h1>
+          <h2 className="text-3xl font-bold">{video.title}</h2>
           {video.url && (
             <a
               href={video.url}
