@@ -3,7 +3,7 @@
 import { db } from "@/db/db"
 import { SelectVideo, videosTable, channelsTable } from "@/db/schema"
 import { ActionState } from "@/types"
-import { eq } from "drizzle-orm"
+import { eq, desc } from "drizzle-orm"
 
 export async function getVideosAction(): Promise<
   ActionState<
@@ -26,12 +26,14 @@ export async function getVideosAction(): Promise<
         tags: videosTable.tags,
         transcript: videosTable.transcript,
         summary: videosTable.summary,
+        isShort: videosTable.isShort,
         processedAt: videosTable.processedAt,
         createdAt: videosTable.createdAt,
         channelName: channelsTable.name
       })
       .from(videosTable)
       .leftJoin(channelsTable, eq(videosTable.channelId, channelsTable.id))
+      .orderBy(desc(videosTable.publishedAt))
 
     return {
       isSuccess: true,
