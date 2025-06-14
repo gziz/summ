@@ -37,7 +37,7 @@ export default function BottomNav() {
 
   return (
     <div className="bg-background fixed bottom-0 left-0 z-40 h-16 w-full border-t md:hidden">
-      <div className="grid h-full grid-cols-4">
+      <div className="grid h-full grid-cols-3">
         {navItems.map(item => (
           <Link
             key={item.name}
