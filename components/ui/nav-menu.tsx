@@ -21,12 +21,12 @@ export default function NavMenu() {
       icon: Plus,
       active: pathname === "/submit"
     },
-    {
-      name: "Explore",
-      href: "/explore",
-      icon: Search,
-      active: pathname === "/explore"
-    },
+    // {
+    //   name: "Explore",
+    //   href: "/explore",
+    //   icon: Search,
+    //   active: pathname === "/explore"
+    // },
     {
       name: "Saved",
       href: "/saved",
