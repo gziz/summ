@@ -11,6 +11,21 @@ interface VideoCardProps {
   thumbnailUrl: string | null
   channelName: string | null | undefined
   publishedAt: Date | string | null
+  duration: number | null
+}
+
+function formatDuration(durationInSeconds: number): string {
+  const hours = Math.floor(durationInSeconds / 3600)
+  const minutes = Math.floor((durationInSeconds % 3600) / 60)
+  const seconds = Math.floor(durationInSeconds % 60)
+
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(
+      seconds
+    ).padStart(2, "0")}`
+  }
+
+  return `${minutes}:${String(seconds).padStart(2, "0")}`
 }
 
 export default function VideoCard({
@@ -18,20 +33,28 @@ export default function VideoCard({
   title,
   thumbnailUrl,
   channelName,
-  publishedAt
+  publishedAt,
+  duration
 }: VideoCardProps) {
   return (
     <Link href={`/summary/${id}`}>
       <Card className="overflow-hidden">
-        {thumbnailUrl && (
-          <Image
-            src={thumbnailUrl}
-            alt={title || "Video thumbnail"}
-            width={480}
-            height={270}
-            className="aspect-video w-full object-cover"
-          />
-        )}
+        <div className="relative">
+          {thumbnailUrl && (
+            <Image
+              src={thumbnailUrl}
+              alt={title || "Video thumbnail"}
+              width={480}
+              height={270}
+              className="aspect-video w-full object-cover"
+            />
+          )}
+          {duration != null && (
+            <div className="absolute bottom-2 right-2 rounded bg-black bg-opacity-75 px-1.5 py-0.5 text-xs text-white">
+              {formatDuration(duration)}
+            </div>
+          )}
+        </div>
         <div className="p-4">
           <h3 className="font-semibold">{title}</h3>
           <p className="text-muted-foreground text-sm">{channelName}</p>

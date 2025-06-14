@@ -62,6 +62,7 @@ async function FeedFetcher() {
           thumbnailUrl={video.thumbnailUrl}
           channelName={video.channelName}
           publishedAt={video.publishedAt}
+          duration={video.durationSec}
         />
       ))}
     </div>
