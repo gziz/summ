@@ -1,13 +1,13 @@
 "use server"
 
 import { db } from "@/db/db"
-import { SelectVideo, videosTable, channelsTable } from "@/db/schema"
+import { aiVideos, aiChannels, SelectAiVideo } from "@/db/ai-read"
 import { ActionState } from "@/types"
-import { eq, desc } from "drizzle-orm"
+import { eq, desc, and, or, isNull, gt } from "drizzle-orm"
 
 export async function getVideosAction(): Promise<
   ActionState<
-    (SelectVideo & {
+    (SelectAiVideo & {
       channelName: string | null
     })[]
   >
@@ -15,25 +15,31 @@ export async function getVideosAction(): Promise<
   try {
     const videos = await db
       .select({
-        id: videosTable.id,
-        channelId: videosTable.channelId,
-        title: videosTable.title,
-        url: videosTable.url,
-        thumbnailUrl: videosTable.thumbnailUrl,
-        publishedAt: videosTable.publishedAt,
-        durationSec: videosTable.durationSec,
-        categoryId: videosTable.categoryId,
-        tags: videosTable.tags,
-        transcript: videosTable.transcript,
-        summary: videosTable.summary,
-        isShort: videosTable.isShort,
-        processedAt: videosTable.processedAt,
-        createdAt: videosTable.createdAt,
-        channelName: channelsTable.name
+        id: aiVideos.id,
+        channelId: aiVideos.channelId,
+        title: aiVideos.title,
+        url: aiVideos.url,
+        thumbnailUrl: aiVideos.thumbnailUrl,
+        publishedAt: aiVideos.publishedAt,
+        durationSec: aiVideos.durationSec,
+        categoryId: aiVideos.categoryId,
+        tags: aiVideos.tags,
+        transcript: aiVideos.transcript,
+        summary: aiVideos.summary,
+        isShort: aiVideos.isShort,
+        processedAt: aiVideos.processedAt,
+        createdAt: aiVideos.createdAt,
+        channelName: aiChannels.name
       })
-      .from(videosTable)
-      .leftJoin(channelsTable, eq(videosTable.channelId, channelsTable.id))
-      .orderBy(desc(videosTable.publishedAt))
+      .from(aiVideos)
+      .leftJoin(aiChannels, eq(aiVideos.channelId, aiChannels.id))
+      .where(
+        and(
+          gt(aiVideos.durationSec, 120),
+          or(eq(aiVideos.isShort, false), isNull(aiVideos.isShort))
+        )
+      )
+      .orderBy(desc(aiVideos.publishedAt))
 
     return {
       isSuccess: true,
@@ -48,10 +54,10 @@ export async function getVideosAction(): Promise<
 
 export async function getVideoAction(
   id: string
-): Promise<ActionState<SelectVideo>> {
+): Promise<ActionState<SelectAiVideo>> {
   try {
-    const video = await db.query.videos.findFirst({
-      where: eq(videosTable.id, id)
+    const video = await db.query.aiVideos.findFirst({
+      where: eq(aiVideos.id, id)
     })
     if (!video) {
       return { isSuccess: false, message: "Video not found" }

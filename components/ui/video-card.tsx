@@ -10,7 +10,7 @@ interface VideoCardProps {
   title: string | null
   thumbnailUrl: string | null
   channelName: string | null | undefined
-  publishedAt: Date | null
+  publishedAt: Date | string | null
 }
 
 export default function VideoCard({
