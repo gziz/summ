@@ -18,7 +18,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "SUMM",
-  description: "A full-stack SAAS web application template."
+  description: "Youtube Summaries you can snack"
 }
 
 // REMOVED: async keyword
